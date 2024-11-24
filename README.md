@@ -1,5 +1,4 @@
 # SSW567-FinalProject
-Final Project for SSW 567
 
 # Machine-Readable Travel Document (MRTD) System
 
