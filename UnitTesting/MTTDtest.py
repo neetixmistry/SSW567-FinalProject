@@ -10,13 +10,14 @@ class TestMRTDProcessor(unittest.TestCase):
         self.test_fields = {
             "passport_type": "P",
             "issuing_country": "UTO",
-            "holder_name": "ERIKSSON ANNA MARIA",
+            "last_name": "ERIKSSON",
+            "given_name": "ANNA MARIA",
             "passport_number": "L898902C3",
             "passport_number_check_digit": "6",
             "country_code": "UTO",
             "birth_date": "740812",
             "birth_date_check_digit": "2",
-            "gender": "F",
+            "sex": "F",
             "expiration_date": "120415",
             "expiration_date_check_digit": "9",
             "personal_number": "ZE184226B",
@@ -39,13 +40,14 @@ class TestMRTDProcessor(unittest.TestCase):
         decoded = self.processor.decode_mrz(self.mrz_lines)
         self.assertEqual(decoded["passport_type"],"P")
         self.assertEqual(decoded["issuing_country"],"UTO")
-        self.assertEqual(decoded["holder_name"],"ERIKSSON  ANNA MARIA")
+        self.assertEqual(decoded["last_name"],"ERIKSSON")
+        self.assertEqual(decoded["given_name"],"ANNA MARIA")
         self.assertEqual(decoded["passport_number"],"L898902C3")
         self.assertEqual(decoded["passport_number_check_digit"],"6")
         self.assertEqual(decoded["country_code"],"UTO")
         self.assertEqual(decoded["birth_date"],"740812")
         self.assertEqual(decoded["birth_date_check_digit"],"2")
-        self.assertEqual(decoded["gender"],"F")
+        self.assertEqual(decoded["sex"],"F")
         self.assertEqual(decoded["expiration_date"],"120415")
         self.assertEqual(decoded["expiration_date_check_digit"],"9")
         self.assertEqual(decoded["personal_number"],"ZE184226B")
@@ -57,8 +59,7 @@ class TestMRTDProcessor(unittest.TestCase):
             self.processor.decode_mrz(["test invalid input"])
 
     # Mock encoding of MRZ lines
-    @patch.object(MRTDProcessor, 'encode_mrz', return_value=["P<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<<<<<<<<<", "L898902C36UTO7408122F1204159ZE184226B<<<<<<1"])
-    def test_encode_mrz(self, mock_encode_mrz):
+    def test_encode_mrz(self):
         encoded = self.processor.encode_mrz(self.test_fields)
         self.assertEqual(len(encoded), 2)
         self.assertTrue(encoded[0].startswith("P<UTO"))
