@@ -2,15 +2,14 @@ import time
 import json
 import sys
 import unittest
+import csv
 from unittest.mock import patch
-
 
 sys.path.insert(0, 'UnitTesting')
 from MRTD import MRTDProcessor
 from MTTDtest import TestMRTDProcessor
 processor = MRTDProcessor()
 unit_tests = TestMRTDProcessor()
-
 
 
 ##get encoded data
@@ -29,27 +28,21 @@ raw_data = raw_data["records_decoded"]
 for x in raw_data:
     decoded_data += [x["line1"] | x['line2'] | {'passport_type': "P"}]
 
-def run_decode_performance_test(n):
-    initial_time = time.perf_counter()
-    my_data = encoded_data[0:n]
-    for x in my_data:
-        processor.decode_mrz(x)
-    final_time = time.perf_counter()
-    lines_read = 2*n
-    print("Lines read: " , lines_read)
-    print(f"decoded {n} records in " , (final_time - initial_time))
 
-def run_encode_performance_test(n):
+def run_performance_test(n, decode):
     initial_time = time.perf_counter()
-    my_data = decoded_data[0:n]
-    for x in my_data:
-        processor.encode_mrz(x)
+    if (decode):
+        my_data = decoded_data[0:n]
+        for x in my_data:
+            processor.encode_mrz(x)
+    else:
+        my_data = encoded_data[0:n]
+        for x in my_data:
+            processor.decode_mrz(x)
     final_time = time.perf_counter()
-    lines_read = 2*n
-    print("Lines read: " , lines_read)
-    print(f"decoded {n} records in " , (final_time - initial_time))
+    return final_time - initial_time
 
-def run_unitTest_performance_test(n):
+def run_unitTest_performance_test(n, decode):
     my_decode_data = decoded_data[0:n]
     my_encode_data = encoded_data[0:n]
     encode_time = 0
@@ -68,18 +61,28 @@ def run_unitTest_performance_test(n):
         unit_tests.test_encode_mrz()
         final_time = time.perf_counter()
         encode_time += (final_time - initial_time)
+    if(decode):
+        return encode_time
+    else:
+        return decode_time
 
 
-    final_time = time.perf_counter()
-  
-    print(f"tested encode of {n} records in " , (encode_time))
-    print(f"tested decode of {n} records in " , (decode_time))
 
 
-##decode
-run_decode_performance_test(100)
+def create_results(filepath, decode):
+    data = [["Lines Read", "Execution time without tests", "Execution time with unit tests"]]
+    kList = [100] + list(range(1000, 10001, 1000))
+    for k in kList:
+        execution = run_performance_test(k, decode)
+        tests = run_unitTest_performance_test(k, decode)
+        results = [k*2] + [execution] + [execution + tests]
+        data += [results]
+    with open(filepath, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerows(data)
 
-##encode
-run_encode_performance_test(100)
+create_results('PerfTesting/PerfTesting_DecodeData_Results.csv', True)
+print("results created for decode data")
+create_results('PerfTesting/PerfTesting_EncodeData_Results.csv', False)
+print("results created for encode data")
 
-run_unitTest_performance_test(100)
