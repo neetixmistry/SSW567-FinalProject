@@ -24,13 +24,14 @@ class MRTDProcessor:
         decoded_data = {
             "passport_type": mrz_lines[0][0],
             "issuing_country": mrz_lines[0][2:5],
-            "holder_name": mrz_lines[0][5:].replace("<", " ").strip(),
+            "last_name": mrz_lines[0][5:].replace("<", " ").strip().split(" ",1)[0],
+            "given_name": (mrz_lines[0][5:].replace("<", " ").strip().split(" ",1)[1]).strip(),
             "passport_number": mrz_lines[1][0:9],
             "passport_number_check_digit": mrz_lines[1][9],
             "country_code": mrz_lines[1][10:13],
             "birth_date": mrz_lines[1][13:19],
             "birth_date_check_digit": mrz_lines[1][19],
-            "gender": mrz_lines[1][20],
+            "sex": mrz_lines[1][20],
             "expiration_date": mrz_lines[1][21:27],
             "expiration_date_check_digit": mrz_lines[1][27],
             "personal_number": mrz_lines[1][28:42].rstrip("<"),
@@ -45,12 +46,14 @@ class MRTDProcessor:
         fields: A dictionary containing fields.
         return: A list of two strings representing the encoded MRZ lines.
         """
-
-        # Example encoding logic
-        # Encode fields into MRZ format
-        # First line for passport type and issuing country
-        # Second line for holder name etc..
-        return [line1, line2] # pragma: no cover
+        line1 = fields["passport_type"] + "<" + fields["issuing_country"] + fields["last_name"] + "<<" + fields["given_name"].replace(" ", "<")
+        line1 += (44 - len(line1)) * "<"
+        line2 = fields["passport_number"] + self.calculate_check_digit(fields["passport_number"]) + fields["country_code"] \
+        + fields["birth_date"] + self.calculate_check_digit(fields["birth_date"]) + fields["sex"] + fields["expiration_date"] \
+        + self.calculate_check_digit(fields["expiration_date"]) + fields["personal_number"]
+        line2 += (43 - len(line2)) * "<"
+        line2 += self.calculate_check_digit( fields["personal_number"])
+        return [line1, line2] 
 
     def calculate_check_digit(self, field):
         """
@@ -103,7 +106,7 @@ class MRTDProcessor:
 
 if __name__ == "__main__":
     processor = MRTDProcessor()
-
+    mrz_lines = ["P<CIVLYNN<<NEVEAH<BRAM<<<<<<<<<<<<<<<<<<<<<<","W620126G54CIV5910106F9707302AJ010215I<<<<<<6"]
     # Decode MRZ
     decoded_fields = processor.decode_mrz(mrz_lines)
     print("Decoded Fields:", decoded_fields)
@@ -112,6 +115,6 @@ if __name__ == "__main__":
     mismatches = processor.validate_check_digits(decoded_fields)
     print("Check Digit Validation Mismatches:", mismatches)
 
-    # Encode MRZ
+    #Encode MRZ
     encoded_mrz = processor.encode_mrz(decoded_fields)
     print("Encoded MRZ Lines:", encoded_mrz)
