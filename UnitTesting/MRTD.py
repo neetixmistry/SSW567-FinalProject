@@ -58,7 +58,7 @@ class MRTDProcessor:
         + fields["birth_date"] + self.calculate_check_digit(fields["birth_date"]) + fields["sex"] + fields["expiration_date"] \
         + self.calculate_check_digit(fields["expiration_date"]) + fields["personal_number"]
         line2 += (43 - len(line2)) * "<"
-        line2 += self.calculate_check_digit( fields["personal_number"])
+        line2 += self.calculate_check_digit(fields["personal_number"])
         return [line1, line2] 
 
     def calculate_check_digit(self, field):
