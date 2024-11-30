@@ -13,15 +13,15 @@ class TestMRTDProcessor(unittest.TestCase):
             "last_name": "ERIKSSON",
             "given_name": "ANNA MARIA",
             "passport_number": "L898902C3",
-            "passport_number_check_digit": "6",
+            #"passport_number_check_digit": "6",
             "country_code": "UTO",
             "birth_date": "740812",
-            "birth_date_check_digit": "2",
+            #"birth_date_check_digit": "2",
             "sex": "F",
             "expiration_date": "120415",
-            "expiration_date_check_digit": "9",
+            #"expiration_date_check_digit": "9",
             "personal_number": "ZE184226B",
-            "personal_number_check_digit": "1"
+            #"personal_number_check_digit": "1"
         }
 
         self.mrz_lines = ["P<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<<<<<<<<<", "L898902C36UTO7408122F1204159ZE184226B<<<<<<1"]
@@ -63,22 +63,23 @@ class TestMRTDProcessor(unittest.TestCase):
     def test_database_query(self, mock_query):
         mock_query.return_value = self.test_fields
         mrz_fields = self.processor.database_query()
-        self.assertEqual(len(mrz_fields), 14)
+        self.assertEqual(len(mrz_fields), 10)
         for x in mrz_fields.keys():
             self.assertIn(x, ["passport_type",
             "issuing_country",
             "last_name",
             "given_name",
             "passport_number",
-            "passport_number_check_digit",
+            #"passport_number_check_digit",
             "country_code",
             "birth_date",
-            "birth_date_check_digit",
+            #"birth_date_check_digit",
             "sex",
             "expiration_date",
-            "expiration_date_check_digit",
+            #"expiration_date_check_digit",
             "personal_number",
-            "personal_number_check_digit"])
+            #"personal_number_check_digit"
+            ])
 
     # Test encoding of MRZ lines
     def test_encode_mrz(self):
@@ -95,12 +96,14 @@ class TestMRTDProcessor(unittest.TestCase):
 
     # Test valid check digits
     def test_validate_check_digits(self):
-        mismatches = self.processor.validate_check_digits(self.test_fields)
+        decoded = self.processor.decode_mrz(self.mrz_lines)
+        mismatches = self.processor.validate_check_digits(decoded)
         self.assertEqual(len(mismatches),0)
 
     # Test logic for invalid check digits
     def test_invalid_check_digits(self):
-        invalid_fields = self.test_fields.copy()
+        decoded = self.processor.decode_mrz(self.mrz_lines)
+        invalid_fields = decoded.copy()
         invalid_fields["expiration_date_check_digit"] = "4"
 
         mismatches = self.processor.validate_check_digits(invalid_fields)
