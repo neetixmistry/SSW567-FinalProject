@@ -39,6 +39,12 @@ class MRTDProcessor:
         }
         return decoded_data
 
+    def database_query(self):
+        """
+        simulates query froma  database to get feilds of information
+        """
+        pass # pragma: no cover
+
     def encode_mrz(self, fields):
         """
         Encodes travel document information into MRZ format.

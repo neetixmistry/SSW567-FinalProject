@@ -58,7 +58,29 @@ class TestMRTDProcessor(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.processor.decode_mrz(["test invalid input"])
 
-    # Mock encoding of MRZ lines
+    # Mock a database query for data fields
+    @patch.object(MRTDProcessor, 'database_query')
+    def test_database_query(self, mock_query):
+        mock_query.return_value = self.test_fields
+        mrz_fields = self.processor.database_query()
+        self.assertEqual(len(mrz_fields), 14)
+        for x in mrz_fields.keys():
+            self.assertIn(x, ["passport_type",
+            "issuing_country",
+            "last_name",
+            "given_name",
+            "passport_number",
+            "passport_number_check_digit",
+            "country_code",
+            "birth_date",
+            "birth_date_check_digit",
+            "sex",
+            "expiration_date",
+            "expiration_date_check_digit",
+            "personal_number",
+            "personal_number_check_digit"])
+
+    # Test encoding of MRZ lines
     def test_encode_mrz(self):
         encoded = self.processor.encode_mrz(self.test_fields)
         self.assertEqual(len(encoded), 2)
