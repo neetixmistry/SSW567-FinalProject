@@ -32,26 +32,26 @@ class TestMRTDProcessor(unittest.TestCase):
         mock_scan.return_value = self.mrz_lines
         mrz_lines = self.processor.scan_mrz()
         self.assertEqual(len(mrz_lines), 2)
-        self.assertTrue("ERIKSSON" in mrz_lines[0])
-        self.assertTrue("36UTO" in mrz_lines[1])
+        self.assertEqual(len(mrz_lines[0]), 44)
+        self.assertEqual(len(mrz_lines[1]), 44)
     
     # Test decoding MRZ lines into fields
     def test_valid_decode_mrz(self):
         decoded = self.processor.decode_mrz(self.mrz_lines)
         self.assertEqual(decoded["passport_type"],"P")
-        self.assertEqual(decoded["issuing_country"],"UTO")
-        self.assertEqual(decoded["last_name"],"ERIKSSON")
-        self.assertEqual(decoded["given_name"],"ANNA MARIA")
-        self.assertEqual(decoded["passport_number"],"L898902C3")
-        self.assertEqual(decoded["passport_number_check_digit"],"6")
-        self.assertEqual(decoded["country_code"],"UTO")
-        self.assertEqual(decoded["birth_date"],"740812")
-        self.assertEqual(decoded["birth_date_check_digit"],"2")
-        self.assertEqual(decoded["sex"],"F")
-        self.assertEqual(decoded["expiration_date"],"120415")
-        self.assertEqual(decoded["expiration_date_check_digit"],"9")
-        self.assertEqual(decoded["personal_number"],"ZE184226B")
-        self.assertEqual(decoded["personal_number_check_digit"],"1")
+        self.assertEqual(decoded["issuing_country"], self.test_fields["issuing_country"])
+        self.assertEqual(decoded["last_name"],  self.test_fields["last_name"])
+        self.assertEqual(decoded["given_name"],  self.test_fields["given_name"])
+        self.assertEqual(decoded["passport_number"],  self.test_fields["passport_number"])
+        self.assertEqual(decoded["passport_number_check_digit"], self.processor.calculate_check_digit(self.test_fields["passport_number"]))
+        self.assertEqual(decoded["country_code"],  self.test_fields["country_code"])
+        self.assertEqual(decoded["birth_date"],  self.test_fields["birth_date"])
+        self.assertEqual(decoded["birth_date_check_digit"], self.processor.calculate_check_digit(self.test_fields["birth_date"]))
+        self.assertEqual(decoded["sex"],  self.test_fields["sex"])
+        self.assertEqual(decoded["expiration_date"],  self.test_fields["expiration_date"])
+        self.assertEqual(decoded["expiration_date_check_digit"], self.processor.calculate_check_digit(self.test_fields["expiration_date"]))
+        self.assertEqual(decoded["personal_number"],  self.test_fields["personal_number"])
+        self.assertEqual(decoded["personal_number_check_digit"], self.processor.calculate_check_digit(self.test_fields["personal_number"]))
 
     # Test that ValueError is raised with invalid inputs
     def test_invalid_decode_mrz(self):
@@ -84,8 +84,8 @@ class TestMRTDProcessor(unittest.TestCase):
     def test_encode_mrz(self):
         encoded = self.processor.encode_mrz(self.test_fields)
         self.assertEqual(len(encoded), 2)
-        self.assertTrue(encoded[0].startswith("P<UTO"))
-        self.assertIn("L898902C3", encoded[1])
+        self.assertEqual(encoded[0], self.mrz_lines[0])
+        self.assertEqual(encoded[1], self.mrz_lines[1])
 
     # Test check digit calculation
     def test_calculate_check_digit(self):
