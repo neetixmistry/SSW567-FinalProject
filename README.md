@@ -2,26 +2,23 @@
 
 # Machine-Readable Travel Document (MRTD) System
 
-## Overview
-This project implements a system to read and verify the Machine-Readable Zone (MRZ) of travel documents, such as passports, to ensure global interoperability through optical character recognition (OCR) and field validation. The system is designed as part of the **SSW567: Software Testing, Quality Assurance, and Maintenance** course at Stevens Institute of Technology.
-
-The project showcases a comprehensive approach to software testing and quality assurance principles, connecting different testing topics learned throughout the semester.
+## Project Description
+This project implements a system to process Machine Readable Travel Documents (MRTDs), ensuring global interoperability and accurate data handling. The system includes functionalities for:
+- Scanning the Machine Readable Zone (MRZ) of travel documents
+- Decoding MRZ data into structured fields
+- Encoding structured fields back into MRZ format
+- Validating fields using check digits to ensure data integrity
+- Reporting mismatches for incorrect fields
+This project was developed as part of SSW567: Software Testing, Quality Assurance, and Maintenance at Stevens Institute of Technology. The project showcases a comprehensive approach to software testing and quality assurance principles, connecting different testing topics learned throughout the semester.
 
 ---
 
 ## Features
-1. **MRZ Scanning and Decoding**  
-   - Extracts MRZ information from a travel document.
-   - Decodes MRZ strings into individual fields such as passport type, country code, passport number, and more.
-
-2. **Check Digit Validation**  
-   - Validates MRZ fields against their respective check digits using a weighted modulus algorithm.
-
-3. **Field Mismatch Reporting**  
-   - Identifies and reports discrepancies between MRZ fields and check digits for error detection.
-
-4. **MRZ Encoding**  
-   - Converts travel document information from a database into MRZ string format.
+- MRZ Scanning: Simulates reading the MRZ from travel documents
+- Data Decoding: Converts MRZ strings into structured fields like passport number, issuing country, and holder's name
+- Data Encoding: Generates MRZ strings from structured data fields
+- Check Digit Validation: Validates MRZ fields using ICAO-compliant check digit algorithms
+- Mismatch Reporting: Identifies discrepancies between fields and their respective check digits
 
 ---
 
@@ -39,6 +36,16 @@ The project showcases a comprehensive approach to software testing and quality a
 
 - **Mismatch Detection**  
   Report field mismatches between extracted data and computed check digits.
+
+---
+
+##Technologies Used
+- Programming Language: Python 3.7.15
+- Testing Tools:
+   - unittest for unit tests
+  - coverage.py for code coverage analysis
+  - MutPy for mutation testing
+- Development Tools: GitHub for version control
 
 ---
 
@@ -60,4 +67,8 @@ The project showcases a comprehensive approach to software testing and quality a
 
 ---
 
-
+## Deliverables
+- Unit Tests: Comprehensive test cases for all functionalities
+- Coverage Report: Code coverage > 90%
+- Mutation Testing: Identified and resolved uncovered scenarios
+- Performance Analysis: Execution times for processing datasets of increasing sizes
