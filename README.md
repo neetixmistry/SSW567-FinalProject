@@ -39,7 +39,7 @@ This project was developed as part of SSW567: Software Testing, Quality Assuranc
 
 ---
 
-##Technologies Used
+## Technologies Used
 - Programming Language: Python 3.7.15
 - Testing Tools:
    - unittest for unit tests
