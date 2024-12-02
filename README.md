@@ -24,7 +24,7 @@ This project was developed as part of SSW567: Software Testing, Quality Assuranc
 
 ## Requirements
 - **MRZ Scanning**  
-  Simulate a hardware scanner to extract two strings from the MRZ. A placeholder method is defined as the hardware implementation is out of scope.
+  - Simulate a hardware scanner to extract two strings from the MRZ. A placeholder method is defined as the hardware implementation is out of scope.
 
 - **MRZ Decoding and Encoding**  
   - Decode MRZ strings into fields and check digits.  
@@ -35,7 +35,7 @@ This project was developed as part of SSW567: Software Testing, Quality Assuranc
   - Calculate the modulus-10 remainder to determine the check digit.  
 
 - **Mismatch Detection**  
-  Report field mismatches between extracted data and computed check digits.
+  - Report field mismatches between extracted data and computed check digits.
 
 ---
 
