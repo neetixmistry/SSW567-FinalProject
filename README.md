@@ -4,11 +4,13 @@
 
 ## Project Description
 This project implements a system to process Machine Readable Travel Documents (MRTDs), ensuring global interoperability and accurate data handling. The system includes functionalities for:
+
 - Scanning the Machine Readable Zone (MRZ) of travel documents
 - Decoding MRZ data into structured fields
 - Encoding structured fields back into MRZ format
 - Validating fields using check digits to ensure data integrity
 - Reporting mismatches for incorrect fields
+
 This project was developed as part of SSW567: Software Testing, Quality Assurance, and Maintenance at Stevens Institute of Technology. The project showcases a comprehensive approach to software testing and quality assurance principles, connecting different testing topics learned throughout the semester.
 
 ---
